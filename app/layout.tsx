@@ -1,6 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
+import { MainNav } from "@/components/main-nav";
+
 
 export const metadata: Metadata = {
   title: "REKr Forum",
@@ -15,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+       <MainNav className="px-6 text-2xl border-2 border-cyan-700"></MainNav>
         {children}
         <Analytics />
       </body>
