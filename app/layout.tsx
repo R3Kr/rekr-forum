@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import Providers from "./providers";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer"
 
 export const metadata: Metadata = {
   title: "REKr Forum",
@@ -20,6 +21,7 @@ export default function RootLayout({
         <Providers>
           <Navbar></Navbar>
           {children}
+          <Footer></Footer>
           <Analytics />
         </Providers>
       </body>
