@@ -16,6 +16,7 @@ import {
   useBreakpointValue,
   useDisclosure,
   useColorMode,
+  Avatar,
 } from "@chakra-ui/react";
 import {
   HamburgerIcon,
@@ -26,10 +27,13 @@ import {
   SunIcon,
 } from "@chakra-ui/icons";
 import { Link } from "@chakra-ui/next-js";
+import Image from "next/image";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
+  const { data } = useSession();
 
   return (
     <Box>
@@ -78,7 +82,10 @@ export default function Navbar() {
           direction={"row"}
           spacing={6}
         >
-          <Button onClick={toggleColorMode} bg={useColorModeValue("white", "gray.800")}>
+          <Button
+            onClick={toggleColorMode}
+            bg={useColorModeValue("white", "gray.800")}
+          >
             {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
           </Button>
 
@@ -87,24 +94,35 @@ export default function Navbar() {
             fontSize={"sm"}
             fontWeight={400}
             variant={"link"}
-            href={"#"}
+            href={"/api/auth/signin"}
           >
-            Sign In
+            {data?.user?.name ? data?.user?.name : "Sign In"}
           </Button>
-          <Button
-            as={Link}
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"pink.400"}
-            href={"#"}
-            _hover={{
-              bg: "pink.300",
-            }}
-          >
-            Sign Up
-          </Button>
+          {!data?.user ? (
+            <Button
+              as={Link}
+              display={{ base: "none", md: "inline-flex" }}
+              fontSize={"sm"}
+              fontWeight={600}
+              color={"white"}
+              bg={"pink.400"}
+              href={"#"}
+              _hover={{
+                bg: "pink.300",
+              }}
+            >
+              Sign Up
+            </Button>
+          ) : (
+            <Image
+              src={
+                "https://cdn.discordapp.com/avatars/156779940031758336/5a3c78f37745f2dc2373ab2cd64f781d.png"
+              }
+              alt="mamma"
+              width={100}
+              height={100}
+            ></Image>
+          )}
         </Stack>
       </Flex>
 
