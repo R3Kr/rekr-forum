@@ -1,11 +1,16 @@
 "use client";
 import { Box, Center, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
+import Card from "./Card";
+import { useState } from "react";
 
 interface Props {
-  posts: string[];
+  pposts: string[];
 }
 
-export default function Forum({posts}: Props) {
+export default function Forum({ pposts }: Props) {
+  let [posts, setPosts] = useState(pposts);
+  console.log(posts);
+
   return (
     <Box
       bg={useColorModeValue("aquamarine", "gray")}
@@ -14,8 +19,16 @@ export default function Forum({posts}: Props) {
       px={20}
     >
       <SimpleGrid columns={{ sm: 1, md: 2 }} spacing={10}>
-        {posts.map(p => <Box key={p} bg="tomato" height="80px">{p}</Box>)}
-        
+        {posts.map((p) => (
+          <Card
+            key={p}
+            onClick={() =>
+              setPosts((posts) => posts.filter((post) => post !== p))
+            }
+          >
+            {p}
+          </Card>
+        ))}
       </SimpleGrid>
     </Box>
   );

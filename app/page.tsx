@@ -1,11 +1,13 @@
+import Admin from "@/components/Admin";
 import Forum from "@/components/Forum";
 
-
-
-const posts = ["awd", "wqweqwe", "123", "adwdawd", "123qwe"]
+const posts = ["awd", "wqweqwe", "123", "adwdawd", "123qwe"];
 
 export default function Home() {
   return (
-    <Forum posts={posts}></Forum>
+    <>
+      <Admin />
+      <Forum pposts={posts}></Forum>
+    </>
   );
 }

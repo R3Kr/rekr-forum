@@ -2,12 +2,15 @@
 
 import { ChakraProvider } from "@chakra-ui/react";
 import { CacheProvider } from "@chakra-ui/next-js";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
 import Pusher from "pusher-js";
+import { isAdmin } from "./actions";
 
-import React, { useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
+
+const AdminContext = createContext(false);
 
 export default function Providers({
   children,
@@ -41,9 +44,34 @@ export default function Providers({
 
   return (
     <SessionProvider session={session}>
-      <CacheProvider>
-        <ChakraProvider>{children}</ChakraProvider>
-      </CacheProvider>
+      <AdminProvider>
+        <CacheProvider>
+          <ChakraProvider>{children}</ChakraProvider>
+        </CacheProvider>
+      </AdminProvider>
     </SessionProvider>
   );
+}
+
+function AdminProvider({ children }: { children: React.ReactNode }) {
+  const { data } = useSession();
+  let [admin, setAdmin] = useState(false);
+
+  useEffect(() => {
+    const fetchAdminStatus = async () => {
+      const resp = await isAdmin();
+      setAdmin(resp);
+    };
+    if (data) {
+      fetchAdminStatus();
+    }
+  }, [data]);
+
+  return (
+    <AdminContext.Provider value={admin}>{children}</AdminContext.Provider>
+  );
+}
+
+export function useIsAdmin() {
+  return useContext(AdminContext);
 }
