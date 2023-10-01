@@ -116,7 +116,7 @@ export default function Navbar() {
           ) : (
             <Image
               src={
-                "https://cdn.discordapp.com/avatars/156779940031758336/5a3c78f37745f2dc2373ab2cd64f781d.png"
+                data?.user?.image as string
               }
               alt="mamma"
               width={100}
