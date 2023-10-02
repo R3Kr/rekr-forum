@@ -47,6 +47,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   role          Role      @default(USER)
+  threads       Thread[]
+  comments      Post[]
 }
 
 model VerificationToken {
@@ -60,4 +62,36 @@ model VerificationToken {
 enum Role {
   USER
   ADMIN
+}
+
+enum Category {
+  PROGRAMMING
+  POLITICS
+  CRYPTO
+  COOKING
+  EDUCATION
+}
+
+model Thread {
+  id        Int   @id @default(sequence())
+  category  Category
+  title     String
+  author    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId    String?
+  createdAt DateTime @default(now())
+  comments  Post[]
+  locked    Boolean  @default(false)
+}
+
+model Post {
+  id        Int   @id @default(sequence())
+  thread    Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId  Int
+  author    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId    String?
+  replyTo   Post?    @relation("Replies", fields: [replyId], references: [id], onDelete: SetNull)
+  replyId   Int?
+  replies   Post[]   @relation("Replies")
+  createdAt DateTime @default(now())
+  content   String
 }

@@ -14,7 +14,6 @@ export default function Forum({ pposts }: Props) {
   return (
     <Box
       bg={useColorModeValue("aquamarine", "gray")}
-      h="1000px"
       color="black"
       px={20}
     >
