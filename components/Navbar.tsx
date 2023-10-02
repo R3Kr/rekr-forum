@@ -68,7 +68,7 @@ export default function Navbar() {
             fontFamily={"heading"}
             color={useColorModeValue("gray.800", "white")}
           >
-            FORUM
+            <Link href={"/"}>FORUM</Link>
           </Box>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>

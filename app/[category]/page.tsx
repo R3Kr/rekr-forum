@@ -1,8 +1,9 @@
 import { Category } from "@prisma/client";
-import { Box } from "@chakra-ui/react";
+import { Box, Button, Flex, Spacer } from "@chakra-ui/react";
 import { unstable_cache as cache } from "next/cache";
 import prisma from "@/lib/db";
 import Link from "next/link";
+import CreateThread from "@/components/CreateThread";
 
 export async function generateStaticParams() {
   return Object.keys(Category)
@@ -37,15 +38,19 @@ export default async function Page({
   )();
 
   return (
-    <>
-      {threads.map((t) => (
-        <>
-          <Link key={t.id} href={`/${params.category}/${t.id}`}>
-            {t.title}
-          </Link>
-          <br></br>
-        </>
-      ))}
-    </>
+    <Flex>
+      <Box>
+        {threads.map((t) => (
+          <>
+            <Link key={t.id} href={`/${params.category}/${t.id}`}>
+              {t.title}
+            </Link>
+            <br></br>
+          </>
+        ))}
+      </Box>
+      <Spacer/>
+      <CreateThread category={category as (typeof Category)[keyof typeof Category]}></CreateThread>
+    </Flex>
   );
 }

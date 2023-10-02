@@ -4,9 +4,10 @@ import { Category } from "@prisma/client";
 import Link from "next/link";
 
 const posts = ["awd", "wqweqwe", "123", "adwdawd", "123qwe"];
+const categories = Object.keys(Category).filter((v) => isNaN(Number(v)));
 
 export default async function Home() {
-  const categories = Object.keys(Category).filter((v) => isNaN(Number(v)));
+  
 
   return (
     <>

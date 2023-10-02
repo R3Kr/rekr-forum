@@ -9,6 +9,7 @@ import { isAdmin } from "./actions";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const AdminContext = createContext(false);
 
@@ -20,6 +21,7 @@ export default function Providers({
   session: Session | null;
 }) {
   const router = useRouter();
+  const queryClient = new QueryClient();
 
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_PUSHER_KEY) {
@@ -44,11 +46,13 @@ export default function Providers({
 
   return (
     <SessionProvider session={session}>
-      <AdminProvider>
-        <CacheProvider>
-          <ChakraProvider>{children}</ChakraProvider>
-        </CacheProvider>
-      </AdminProvider>
+      <QueryClientProvider client={queryClient}>
+        <AdminProvider>
+          <CacheProvider>
+            <ChakraProvider>{children}</ChakraProvider>
+          </CacheProvider>
+        </AdminProvider>
+      </QueryClientProvider>
     </SessionProvider>
   );
 }
