@@ -2,6 +2,7 @@ import prisma from "@/lib/db";
 import { unstable_cache as cache } from "next/cache";
 import { Category } from "@prisma/client";
 import { z } from "zod";
+import { Box, Flex, Stack, Text} from "@chakra-ui/react";
 
 // Generate segments for [product] using the `params` passed from
 // the parent segment's `generateStaticParams` function
@@ -35,6 +36,7 @@ import { z } from "zod";
 // }
 
 import React from "react";
+import CreatePost from "@/components/CreatePost";
 
 export default async function Page({ params }: { params: { thread: string } }) {
   const thread = z.number().parse(Number(params.thread));
@@ -51,5 +53,13 @@ export default async function Page({ params }: { params: { thread: string } }) {
     { revalidate: 10 }
   )();
 
-  return <div>{posts.map((p) => p.content)}</div>;
+  return (
+    <Stack p={10}>
+      <Text as={"h1"} fontSize={"7xl"}>Test</Text>
+      {posts.map((p) => (
+        <Box key={p.id}>{p.content}</Box>
+      ))}
+      <CreatePost threadId={thread}></CreatePost>
+    </Stack>
+  );
 }

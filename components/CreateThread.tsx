@@ -15,6 +15,7 @@ import {
   FormLabel,
   Input,
   Textarea,
+  Box,
 } from "@chakra-ui/react";
 import { Category } from "@prisma/client";
 import { createThread } from "@/app/actions";
@@ -33,9 +34,9 @@ export default function CreateThread({ category }: Props) {
   let [title, setTitle] = useState("");
   let [content, setContent] = useState("");
   const router = useRouter();
-  const { data } = useSession();
+  const session = useSession();
 
-  const { mutate } = useMutation({
+  const { data, mutate, isLoading } = useMutation({
     mutationFn: () => {
       return createThread(selectedCategory, title, content);
     },
@@ -51,7 +52,9 @@ export default function CreateThread({ category }: Props) {
       <Button
         bg={"darkturquoise"}
         m={5}
-        onClick={() => (data ? onOpen() : router.push("/api/auth/signin"))}
+        onClick={() =>
+          session.data ? onOpen() : router.push("/api/auth/signin")
+        }
       >
         Create Thread
       </Button>
@@ -98,7 +101,18 @@ export default function CreateThread({ category }: Props) {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={() => mutate()}>
+            {data === false && (
+              <Box textColor={"red.300"} mr={3}>
+                Invalid data
+              </Box>
+            )}
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={() => mutate()}
+              isLoading={isLoading}
+              isDisabled={isLoading}
+            >
               Create
             </Button>
             <Button variant="ghost" onClick={onClose}>

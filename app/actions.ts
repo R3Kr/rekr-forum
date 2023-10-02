@@ -27,7 +27,11 @@ const threadFormData = z.object({
   content: z.string().min(1),
 });
 
-export async function createThread(category: (typeof Category)[keyof typeof Category], title: string, content: string): Promise<number | false> {
+export async function createThread(
+  category: (typeof Category)[keyof typeof Category],
+  title: string,
+  content: string
+): Promise<number | false> {
   const session = await getServerSession();
   if (!session) {
     console.log("unauthorized");
@@ -72,5 +76,44 @@ export async function createThread(category: (typeof Category)[keyof typeof Cate
   } catch (error) {
     console.log(error);
     return false;
+  }
+}
+
+const postFormData = z.object({
+  threadId: z.number(),
+  content: z.string().min(1),
+});
+
+export async function createPost(userData: {
+  threadId: number;
+  content: string;
+}) {
+  const session = await getServerSession();
+  if (!session) {
+    console.log("unauthorized");
+    throw Error("unathorized");
+  }
+
+  try {
+    const data = postFormData.parse(userData);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session?.user?.email as string | undefined,
+      },
+    });
+
+    const post = await prisma.post.create({
+      data: {
+        content: data.content,
+        userId: user?.id,
+        threadId: data.threadId,
+      },
+    });
+
+    return post;
+  } catch (error) {
+    console.log(error);
+    throw Error("something failed");
   }
 }
