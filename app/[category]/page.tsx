@@ -3,6 +3,7 @@ import { Box } from "@chakra-ui/react";
 import { unstable_cache as cache } from "next/cache";
 import prisma from "@/lib/db";
 import Link from "next/link";
+import { generateStaticParams as gsp } from "./[thread]/page";
 
 export async function generateStaticParams() {
   return Object.keys(Category)
@@ -15,6 +16,11 @@ export default async function Page({
 }: {
   params: { category: string };
 }) {
+  //DEBUG
+  // const p = await generateStaticParams();
+  // console.log(p);
+  // console.log(await gsp({ params: p[0] }));
+
   const category = params.category.toUpperCase();
 
   const threads = await cache(
@@ -35,7 +41,9 @@ export default async function Page({
     <>
       {threads.map((t) => (
         <>
-          <Link key={t.id} href={`/${params.category}/${t.id}`}>{t.title}</Link>
+          <Link key={t.id} href={`/${params.category}/${t.id}`}>
+            {t.title}
+          </Link>
           <br></br>
         </>
       ))}

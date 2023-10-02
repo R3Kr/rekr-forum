@@ -6,15 +6,18 @@ import { z } from "zod";
 // Generate segments for [product] using the `params` passed from
 // the parent segment's `generateStaticParams` function
 export async function generateStaticParams({
-  params: { category },
+  params
 }: {
-  params: { category: (typeof Category)[keyof typeof Category] };
+  params: { category: string };
 }) {
+
+  const category = params.category.toUpperCase();
+
   const threads = await cache(
     async () => {
       return prisma.thread.findMany({
         where: {
-          category: category,
+          category: category as (typeof Category)[keyof typeof Category],
         },
       });
     },
