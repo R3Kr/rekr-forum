@@ -5,34 +5,34 @@ import { z } from "zod";
 
 // Generate segments for [product] using the `params` passed from
 // the parent segment's `generateStaticParams` function
-export async function generateStaticParams({
-  params,
-}: {
-  params: { category: string };
-}) {
-  console.log(params.category);
-  //const category = params.category.toUpperCase();
-  let category = params.category;
-  if (category) {
-    category = params.category.toUpperCase();
-  }
+// export async function generateStaticParams({
+//   params,
+// }: {
+//   params: { category: string };
+// }) {
+//   console.log(params.category);
+//   //const category = params.category.toUpperCase();
+//   let category = params.category;
+//   if (category) {
+//     category = params.category.toUpperCase();
+//   }
 
-  const threads = await cache(
-    async () => {
-      return prisma.thread.findMany({
-        where: {
-          category: category as (typeof Category)[keyof typeof Category],
-        },
-      });
-    },
-    [category],
-    {
-      revalidate: 10,
-    }
-  )();
+//   const threads = await cache(
+//     async () => {
+//       return prisma.thread.findMany({
+//         where: {
+//           category: category as (typeof Category)[keyof typeof Category],
+//         },
+//       });
+//     },
+//     [category],
+//     {
+//       revalidate: 10,
+//     }
+//   )();
 
-  return threads.map((t) => ({ thread: t.id.toString() }));
-}
+//   return threads.map((t) => ({ thread: t.id.toString() }));
+// }
 
 import React from "react";
 
