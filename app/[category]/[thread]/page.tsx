@@ -32,11 +32,17 @@ import React from "react";
 export default async function Page({ params }: { params: { thread: string } }) {
   const thread = z.number().parse(Number(params.thread));
 
-  const posts = await prisma.post.findMany({
-    where: {
-      threadId: thread,
+  const posts = await cache(
+    async () => {
+      return prisma.post.findMany({
+        where: {
+          threadId: thread,
+        },
+      });
     },
-  });
+    [params.thread],
+    { revalidate: 10 }
+  )();
 
   return <div>{posts.map((p) => p.content)}</div>;
 }
