@@ -6,12 +6,16 @@ import { z } from "zod";
 // Generate segments for [product] using the `params` passed from
 // the parent segment's `generateStaticParams` function
 export async function generateStaticParams({
-  params
+  params,
 }: {
   params: { category: string };
 }) {
-
-  const category = params.category.toUpperCase();
+  console.log(params.category);
+  //const category = params.category.toUpperCase();
+  let category = params.category;
+  if (category) {
+    category = params.category.toUpperCase();
+  }
 
   const threads = await cache(
     async () => {

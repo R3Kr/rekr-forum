@@ -3,7 +3,6 @@ import { Box } from "@chakra-ui/react";
 import { unstable_cache as cache } from "next/cache";
 import prisma from "@/lib/db";
 import Link from "next/link";
-import { generateStaticParams as gsp } from "./[thread]/page";
 
 export async function generateStaticParams() {
   return Object.keys(Category)
