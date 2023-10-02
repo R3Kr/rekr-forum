@@ -72,7 +72,7 @@ export default function CreateThread({ category }: Props) {
                 }
               >
                 {Object.values(Category).map((c) => (
-                  <option>{c}</option>
+                  <option key={c}>{c}</option>
                 ))}
               </Select>
             </FormControl>
