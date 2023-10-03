@@ -1,34 +1,22 @@
 "use client";
-import { Box, Center, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
 import Card from "./Card";
 import { useState } from "react";
+import { Category } from "@prisma/client";
+import { Link } from "@chakra-ui/next-js";
+import { Box, Stack, Button } from "@chakra-ui/react";
 
 interface Props {
-  pposts: string[];
+  categories: string[];
 }
 
-export default function Forum({ pposts }: Props) {
-  let [posts, setPosts] = useState(pposts);
-  console.log(posts);
-
+export default function Forum({ categories }: Props) {
   return (
-    <Box
-      bg={useColorModeValue("aquamarine", "gray")}
-      color="black"
-      px={20}
-    >
-      <SimpleGrid columns={{ sm: 1, md: 2 }} spacing={10}>
-        {posts.map((p) => (
-          <Card
-            key={p}
-            onClick={() =>
-              setPosts((posts) => posts.filter((post) => post !== p))
-            }
-          >
-            {p}
-          </Card>
-        ))}
-      </SimpleGrid>
-    </Box>
+    <Stack gap={3} mt={2}>
+      {categories.map((c) => (
+        <Button as={Link} key={c} fontSize={20} href={`/${c.toLowerCase()}`}>
+          {c}
+        </Button>
+      ))}
+    </Stack>
   );
 }

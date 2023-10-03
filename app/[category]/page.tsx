@@ -42,9 +42,9 @@ export default async function Page({
       <Box>
         {threads.map((t) => (
           <>
-            <Link key={t.id} href={`/${params.category}/${t.id}`}>
+            <Button as={Link} key={t.id} href={`/${params.category}/${t.id}`}>
               {t.title}
-            </Link>
+            </Button>
             <br></br>
           </>
         ))}

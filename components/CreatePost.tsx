@@ -10,12 +10,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
-import { experimental_useOptimistic as useOptimistic } from "react";
 
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Post, Thread } from "@prisma/client";
-
+import { useSession } from "next-auth/react";
+//import Link from "next/link";
+import { Link } from "@chakra-ui/next-js";
 interface Props {
   thread: Thread;
   posts: Post[];
@@ -26,6 +27,7 @@ export default function CreatePost({ thread, posts }: Props) {
 
   let [content, setContent] = useState("");
   const router = useRouter();
+  const session = useSession();
   const { mutate, isError, isLoading } = useMutation({
     mutationFn: () => {
       setPostContents([...postContents, content]);
@@ -39,6 +41,7 @@ export default function CreatePost({ thread, posts }: Props) {
 
   return (
     <Stack p={10}>
+      <Text as={Link} href={`/${thread.category}`}>Go back</Text>
       <Text as={"h1"} fontSize={"7xl"}>
         {thread.title}
       </Text>
@@ -57,7 +60,9 @@ export default function CreatePost({ thread, posts }: Props) {
             bg={"darkturquoise"}
             disabled={isLoading}
             isLoading={isLoading}
-            onClick={() => mutate()}
+            onClick={() => {
+              session.data ? mutate() : redirect("/api/auth/signin");
+            }}
           >
             Create post
           </Button>
