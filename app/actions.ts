@@ -46,25 +46,18 @@ export async function createThread(
       content: content,
     });
 
-    console.log(data);
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session?.user?.email as string | undefined,
-      },
-    });
-
     const thread = await prisma.thread.create({
       data: {
         category: data.category as (typeof Category)[keyof typeof Category],
         title: data.title,
-        userId: user?.id,
+        userId: session.user.id,
       },
     });
 
     const post = await prisma.post.create({
       data: {
         content: data.content,
-        userId: user?.id,
+        userId: session.user.id,
         threadId: thread.id,
       },
     });
@@ -98,16 +91,10 @@ export async function createPost(userData: {
   try {
     const data = postFormData.parse(userData);
 
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session?.user?.email as string | undefined,
-      },
-    });
-
     const post = await prisma.post.create({
       data: {
         content: data.content,
-        userId: user?.id,
+        userId: session.user.id,
         threadId: data.threadId,
       },
     });
