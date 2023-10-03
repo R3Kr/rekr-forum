@@ -2,7 +2,7 @@ import prisma from "@/lib/db";
 import { unstable_cache as cache } from "next/cache";
 import { Category } from "@prisma/client";
 import { z } from "zod";
-import { Box, Flex, Stack, Text} from "@chakra-ui/react";
+import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 
 // Generate segments for [product] using the `params` passed from
 // the parent segment's `generateStaticParams` function
@@ -37,29 +37,38 @@ import { Box, Flex, Stack, Text} from "@chakra-ui/react";
 
 import React from "react";
 import CreatePost from "@/components/CreatePost";
+import { redirect } from "next/navigation";
 
 export default async function Page({ params }: { params: { thread: string } }) {
-  const thread = z.number().parse(Number(params.thread));
+  const threadId = z.number().parse(Number(params.thread));
 
   const posts = await cache(
     async () => {
       return prisma.post.findMany({
         where: {
-          threadId: thread,
+          threadId: threadId,
+        },
+      });
+    },
+    [params.thread + "posts"],
+    { revalidate: 10 }
+  )();
+
+  const thread = await cache(
+    async () => {
+      return prisma.thread.findFirst({
+        where: {
+          id: threadId,
         },
       });
     },
     [params.thread],
-    { revalidate: 10 }
+    { revalidate: false }
   )();
 
-  return (
-    <Stack p={10}>
-      <Text as={"h1"} fontSize={"7xl"}>Test</Text>
-      {posts.map((p) => (
-        <Box key={p.id}>{p.content}</Box>
-      ))}
-      <CreatePost threadId={thread}></CreatePost>
-    </Stack>
-  );
+  if (!thread) {
+    redirect("/");
+  }
+
+  return <CreatePost thread={thread} posts={posts}></CreatePost>;
 }

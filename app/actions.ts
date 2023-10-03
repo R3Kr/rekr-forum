@@ -7,6 +7,7 @@ import { Category } from "@prisma/client";
 import { fork } from "child_process";
 import { redirect } from "next/navigation";
 import { FaSadCry } from "react-icons/fa";
+import { revalidatePath } from "next/cache";
 
 export async function isAdmin() {
   const session = await getServerSession();
