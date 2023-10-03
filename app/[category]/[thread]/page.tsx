@@ -51,7 +51,7 @@ export default async function Page({ params }: { params: { thread: string } }) {
       });
     },
     [params.thread + "posts"],
-    { revalidate: 10 }
+    { tags: [params.thread]}
   )();
 
   const thread = await cache(
