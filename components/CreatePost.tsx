@@ -12,7 +12,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 
 import { redirect, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Thread } from "@prisma/client";
 import { useSession } from "next-auth/react";
 //import Link from "next/link";
@@ -47,7 +47,7 @@ export default function CreatePost({ thread, posts }: Props) {
 
   let [content, setContent] = useState("");
   const session = useSession();
-  const { mutate, isError, isLoading } = useMutation({
+  const { mutate, isError, isLoading, reset } = useMutation({
     mutationFn: () => {
       setPostContents([
         ...postsContent,
@@ -59,6 +59,10 @@ export default function CreatePost({ thread, posts }: Props) {
         },
       ]);
       return createPost({ threadId: thread.id, content });
+    },
+
+    onSuccess: () => {
+      setContent("");
     },
 
     onError: () => {
@@ -81,7 +85,10 @@ export default function CreatePost({ thread, posts }: Props) {
         <Stack spacing={2}>
           <Textarea
             placeholder="This is the content of the post"
-            onChange={(e) => setContent(e.target.value)}
+            onChange={(e) => {
+              setContent(e.target.value);
+              reset();
+            }}
           ></Textarea>
           <FormErrorMessage>Cannot be empty</FormErrorMessage>
           <Button

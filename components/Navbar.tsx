@@ -115,9 +115,7 @@ export default function Navbar() {
             </Button>
           ) : (
             <Image
-              src={
-                data?.user?.image as string
-              }
+              src={data?.user?.image as string}
               alt="mamma"
               width={100}
               height={100}
@@ -297,41 +295,41 @@ interface NavItem {
 
 const NAV_ITEMS: Array<NavItem> = [
   {
-    label: "Inspiration",
+    label: "Categories",
     children: [
       {
-        label: "Explore Design Work",
-        subLabel: "Trending Design to inspire you",
-        href: "#",
+        label: "Programming",
+        subLabel: "For programmers 😎",
+        href: "/programming",
       },
       {
-        label: "New & Noteworthy",
-        subLabel: "Up-and-coming Designers",
-        href: "#",
+        label: "Politics",
+        subLabel: "For friendly discussions",
+        href: "/politics",
+      },
+      {
+        label: "Crypto",
+        subLabel: "To the moon!",
+        href: "/crypto",
+      },
+      {
+        label: "Cooking",
+        subLabel: "Let'em cook",
+        href: "/cooking",
+      },
+      {
+        label: "Education",
+        subLabel: "Not at DSV",
+        href: "/education",
       },
     ],
   },
   {
-    label: "Find Work",
-    children: [
-      {
-        label: "Job Board",
-        subLabel: "Find your dream design job",
-        href: "#",
-      },
-      {
-        label: "Freelance Projects",
-        subLabel: "An exclusive list for contract work",
-        href: "#",
-      },
-    ],
+    label: "Top threads",
+    href: "/topthreads",
   },
   {
-    label: "Learn Design",
-    href: "#",
-  },
-  {
-    label: "Hire Designers",
-    href: "#",
+    label: "Create thread",
+    href: "/createthread",
   },
 ];

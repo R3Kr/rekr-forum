@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { Button, Select } from "@chakra-ui/react";
 import {
@@ -24,10 +24,11 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 interface Props {
-  category: (typeof Category)[keyof typeof Category];
+  category?: (typeof Category)[keyof typeof Category];
+  open?: boolean;
 }
 
-export default function CreateThread({ category }: Props) {
+export default function CreateThread({ category, open }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = useRef(null);
   let [selectedCategory, setSelectedCategory] = useState(category);
@@ -38,7 +39,7 @@ export default function CreateThread({ category }: Props) {
 
   const { data, mutate, isLoading } = useMutation({
     mutationFn: () => {
-      return createThread(selectedCategory, title, content);
+      return createThread(selectedCategory as (typeof Category)[keyof typeof Category], title, content);
     },
     onSuccess(data, variables, context) {
       if (data) {
@@ -46,6 +47,12 @@ export default function CreateThread({ category }: Props) {
       }
     },
   });
+
+  useEffect(() => {
+    if (open) {
+      onOpen();
+    }
+  }, []);
 
   return (
     <>
