@@ -26,7 +26,7 @@ import {
   MoonIcon,
   SunIcon,
 } from "@chakra-ui/icons";
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 import Image from "next/image";
 import { useSession, signIn, signOut } from "next-auth/react";
 
@@ -143,7 +143,7 @@ const DesktopNav = () => {
           <Popover trigger={"hover"} placement={"bottom-start"}>
             <PopoverTrigger>
               <Box
-                as="a"
+                as={Link}
                 p={2}
                 href={navItem.href ?? "#"}
                 fontSize={"sm"}
@@ -184,7 +184,7 @@ const DesktopNav = () => {
 const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
   return (
     <Box
-      as="a"
+      as={Link}
       href={href}
       role={"group"}
       display={"block"}
@@ -240,7 +240,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
     <Stack spacing={4} onClick={children && onToggle}>
       <Box
         py={2}
-        as="a"
+        as={Link}
         href={href ?? "#"}
         justifyContent="space-between"
         alignItems="center"
@@ -276,7 +276,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
         >
           {children &&
             children.map((child) => (
-              <Box as="a" key={child.label} py={2} href={child.href}>
+              <Box as={Link} key={child.label} py={2} href={child.href}>
                 {child.label}
               </Box>
             ))}
