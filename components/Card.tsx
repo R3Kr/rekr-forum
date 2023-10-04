@@ -1,4 +1,3 @@
-import { useIsAdmin } from "@/app/providers";
 import { CloseIcon } from "@chakra-ui/icons";
 import { Box, Spacer, Flex } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
@@ -22,7 +21,7 @@ export default function Card({
   children: React.ReactNode;
   onClick: () => void;
 }) {
-  const admin = useIsAdmin();
+  //const admin = useIsAdmin();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<any>();
 
@@ -31,7 +30,7 @@ export default function Card({
       <Flex bg="tomato" height="80px">
         {children}
         <Spacer />
-        {admin && <CloseIcon onClick={onOpen} />}
+        {false && <CloseIcon onClick={onOpen} />}
       </Flex>
 
       <AlertDialog

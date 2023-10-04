@@ -1,4 +1,3 @@
-import Admin from "@/components/Admin";
 import Forum from "@/components/Forum";
 import { Category } from "@prisma/client";
 import { Link } from "@chakra-ui/next-js";
