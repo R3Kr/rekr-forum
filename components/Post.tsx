@@ -28,6 +28,9 @@ export default function Post(post: PostProps) {
         height={20}
       ></Image>
       <Text>{`made by: ${post.author ? post.author : "redacted"} |  ${post.createdAt.toString()}`}</Text>
+      <Text>-----------------------------------------------------------------------</Text>
+      <br></br>
+
     </Stack>
   );
 }
