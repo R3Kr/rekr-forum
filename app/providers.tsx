@@ -11,7 +11,8 @@ import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const AdminContext = createContext(false);
+//const AdminContext = createContext(false);
+const PusherContext = createContext<Pusher | undefined>(undefined);
 
 export default function Providers({
   children,
@@ -21,6 +22,8 @@ export default function Providers({
   session: Session | null;
 }) {
   const router = useRouter();
+  const [pusher, setPusher] = useState<Pusher>();
+  const [playing, toggle, setAudio] = useAudio("/fun.mp3");
   const queryClient = new QueryClient();
 
   useEffect(() => {
@@ -31,6 +34,7 @@ export default function Providers({
     const pusherInstance = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
       cluster: "eu",
     });
+    setPusher(pusherInstance);
     const channel = pusherInstance.subscribe("rickroll");
 
     channel.bind("rickroll-event", (data: string) => {
@@ -39,6 +43,11 @@ export default function Providers({
       //redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
     });
 
+    channel.bind("audio-event", (data: string) => {
+      toggle()
+    })
+
+    console.log(playing);
     return () => {
       pusherInstance.unsubscribe("rickroll");
     };
@@ -47,35 +56,66 @@ export default function Providers({
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
-        <AdminProvider>
+        <PusherContext.Provider value={pusher}>
           <CacheProvider>
             <ChakraProvider>{children}</ChakraProvider>
           </CacheProvider>
-        </AdminProvider>
+        </PusherContext.Provider>
       </QueryClientProvider>
     </SessionProvider>
   );
 }
 
-function AdminProvider({ children }: { children: React.ReactNode }) {
-  const { data } = useSession();
-  let [admin, setAdmin] = useState(false);
+// function AdminProvider({ children }: { children: React.ReactNode }) {
+//   const { data } = useSession();
+//   let [admin, setAdmin] = useState(false);
 
-  useEffect(() => {
-    const fetchAdminStatus = async () => {
-      const resp = await isAdmin();
-      setAdmin(resp);
-    };
-    if (data) {
-      fetchAdminStatus();
-    }
-  }, [data]);
+//   useEffect(() => {
+//     const fetchAdminStatus = async () => {
+//       const resp = await isAdmin();
+//       setAdmin(resp);
+//     };
+//     if (data) {
+//       fetchAdminStatus();
+//     }
+//   }, [data]);
 
-  return (
-    <AdminContext.Provider value={admin}>{children}</AdminContext.Provider>
-  );
+//   return (
+//     <AdminContext.Provider value={admin}>{children}</AdminContext.Provider>
+//   );
+// }
+
+// export function useIsAdmin() {
+//   return useContext(AdminContext);
+// }
+
+export function usePusher() {
+  return useContext(PusherContext);
 }
 
-export function useIsAdmin() {
-  return useContext(AdminContext);
+export function useAudio(
+  url: string
+): [
+  boolean,
+  () => void,
+  React.Dispatch<React.SetStateAction<HTMLAudioElement>>
+] {
+  const [audio, setAudio] = useState(new Audio(url));
+  const [playing, setPlaying] = useState(false);
+
+  const toggle = () => setPlaying(!playing);
+
+  useEffect(() => {
+    playing ? audio.play() : audio.pause();
+  }, [playing]);
+
+  useEffect(() => {
+    console.log("audio");
+    audio.addEventListener("ended", () => setPlaying(false));
+    return () => {
+      audio.removeEventListener("ended", () => setPlaying(false));
+    };
+  }, []);
+
+  return [playing, toggle, setAudio];
 }
