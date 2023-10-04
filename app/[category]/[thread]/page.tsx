@@ -38,20 +38,17 @@ import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import CreatePost from "@/components/CreatePost";
 import { redirect } from "next/navigation";
+import { getPostsAndUser } from "@/app/actions";
 
 export default async function Page({ params }: { params: { thread: string } }) {
   const threadId = z.number().parse(Number(params.thread));
 
   const posts = await cache(
     async () => {
-      return prisma.post.findMany({
-        where: {
-          threadId: threadId,
-        },
-      });
+      return getPostsAndUser(threadId);
     },
     [params.thread + "posts"],
-    { tags: [params.thread]}
+    { tags: [params.thread] }
   )();
 
   const thread = await cache(
@@ -69,6 +66,8 @@ export default async function Page({ params }: { params: { thread: string } }) {
   if (!thread) {
     redirect("/");
   }
+
+  posts.forEach((p) => console.log(p));
 
   return <CreatePost thread={thread} posts={posts}></CreatePost>;
 }

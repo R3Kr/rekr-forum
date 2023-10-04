@@ -4,6 +4,8 @@ import { unstable_cache as cache } from "next/cache";
 import prisma from "@/lib/db";
 import Link from "next/link";
 import CreateThread from "@/components/CreateThread";
+import Thread from "@/components/Thread";
+import { getThreadsAndUser } from "../actions";
 
 export async function generateStaticParams() {
   return Object.keys(Category)
@@ -25,15 +27,13 @@ export default async function Page({
 
   const threads = await cache(
     async () => {
-      return prisma.thread.findMany({
-        where: {
-          category: category as (typeof Category)[keyof typeof Category],
-        },
-      });
+      return getThreadsAndUser(
+        category as (typeof Category)[keyof typeof Category]
+      );
     },
     [category],
     {
-      revalidate: 10,
+      tags: [category],
     }
   )();
 
@@ -42,15 +42,15 @@ export default async function Page({
       <Box>
         {threads.map((t) => (
           <>
-            <Button as={Link} key={t.id} href={`/${params.category}/${t.id}`}>
-              {t.title}
-            </Button>
+            <Thread thread={t}></Thread>
             <br></br>
           </>
         ))}
       </Box>
-      <Spacer/>
-      <CreateThread category={category as (typeof Category)[keyof typeof Category]}></CreateThread>
+      <Spacer />
+      <CreateThread
+        category={category as (typeof Category)[keyof typeof Category]}
+      ></CreateThread>
     </Flex>
   );
 }

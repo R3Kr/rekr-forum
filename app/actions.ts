@@ -8,9 +8,10 @@ import { fork } from "child_process";
 import { redirect } from "next/navigation";
 import { FaSadCry } from "react-icons/fa";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
 export async function isAdmin() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   const user = await prisma.user.findUnique({
     where: {
       email: session?.user?.email as string | undefined,
@@ -33,7 +34,7 @@ export async function createThread(
   title: string,
   content: string
 ): Promise<number | false> {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   if (!session) {
     console.log("unauthorized");
     return false;
@@ -63,6 +64,7 @@ export async function createThread(
     });
 
     if (thread && post) {
+      revalidateTag(thread.category);
       return thread.id;
     } else {
       return false;
@@ -82,7 +84,7 @@ export async function createPost(userData: {
   threadId: number;
   content: string;
 }) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   if (!session) {
     console.log("unauthorized");
     throw Error("unathorized");
@@ -105,4 +107,38 @@ export async function createPost(userData: {
     console.log(error);
     throw Error("something failed");
   }
+}
+
+export async function getThreadsAndUser(
+  category: (typeof Category)[keyof typeof Category]
+) {
+  return prisma.thread.findMany({
+    where: {
+      category: category,
+    },
+    include: {
+      author: {
+        select: {
+          image: true,
+          name: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getPostsAndUser(threadId: number) {
+  return prisma.post.findMany({
+    where: {
+      threadId: threadId,
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
+    },
+  });
 }

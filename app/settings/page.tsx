@@ -12,6 +12,7 @@ export default function Page() {
 
   return (
     <>
+    <div>{data.user.id}</div>
     <div>{data.user?.name}</div>
     <div>{data.user?.email}</div>
     <div>{data.user?.image}</div>

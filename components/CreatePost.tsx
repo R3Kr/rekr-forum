@@ -13,40 +13,69 @@ import { useMutation } from "@tanstack/react-query";
 
 import { redirect, useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { Post, Thread } from "@prisma/client";
+import { Thread } from "@prisma/client";
 import { useSession } from "next-auth/react";
 //import Link from "next/link";
 import { Link } from "@chakra-ui/next-js";
+import { getPostsAndUser } from "@/app/actions";
+import Post, { PostProps } from "./Post";
+
+type ItemType<T extends any[]> = T extends (infer R)[] ? R : any;
+
 interface Props {
   thread: Thread;
-  posts: Post[];
+  posts: Awaited<ReturnType<typeof getPostsAndUser>>;
+}
+
+function postToPostProps(
+  p: ItemType<Awaited<ReturnType<typeof getPostsAndUser>>>
+): PostProps {
+  const returnVal: PostProps = {
+    content: p.content,
+    createdAt: p.createdAt,
+    author: p.author?.name as string | undefined,
+    authorUrl: p.author?.image as string | undefined,
+  };
+
+  return returnVal;
 }
 
 export default function CreatePost({ thread, posts }: Props) {
-  let [postContents, setPostContents] = useState(posts.map((p) => p.content));
+  let [postsContent, setPostContents] = useState<PostProps[]>(
+    posts.map((p) => postToPostProps(p))
+  );
 
   let [content, setContent] = useState("");
-  const router = useRouter();
   const session = useSession();
   const { mutate, isError, isLoading } = useMutation({
     mutationFn: () => {
-      setPostContents([...postContents, content]);
+      setPostContents([
+        ...postsContent,
+        {
+          content,
+          author: session.data?.user.name as string | undefined,
+          authorUrl: session.data?.user.image as string | undefined,
+          createdAt: new Date(),
+        },
+      ]);
       return createPost({ threadId: thread.id, content });
     },
 
     onError: () => {
-      setPostContents(postContents.filter((p) => p !== content));
+      setPostContents(postsContent.slice(0, -1));
     },
   });
 
   return (
     <Stack p={10}>
-      <Text as={Link} href={`/${thread.category}`}>Go back</Text>
+      <Text as={Link} href={`/${thread.category}`}>
+        Go back
+      </Text>
       <Text as={"h1"} fontSize={"7xl"}>
         {thread.title}
       </Text>
-      {postContents.map((p) => (
-        <Box key={p}>{p}</Box>
+      {postsContent.map((p) => (
+        <Post {...p} key={p.createdAt.toTimeString()}></Post>
       ))}
       <FormControl isInvalid={isError}>
         <Stack spacing={2}>
