@@ -75,7 +75,7 @@ export default function CreatePost({ thread, posts }: Props) {
         {thread.title}
       </Text>
       {postsContent.map((p) => (
-        <Post {...p} key={p.createdAt.toTimeString()}></Post>
+        <Post {...p} key={p.createdAt + p.content}></Post>
       ))}
       <FormControl isInvalid={isError}>
         <Stack spacing={2}>
