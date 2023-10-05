@@ -35,21 +35,27 @@ export default function Providers({
       cluster: "eu",
     });
     setPusher(pusherInstance);
-    const channel = pusherInstance.subscribe("rickroll");
+    const rickroll = pusherInstance.subscribe("rickroll");
+    const audio = pusherInstance.subscribe("audio");
 
-    channel.bind("rickroll-event", (data: string) => {
+    rickroll.bind("rickroll-event", (data: string) => {
       console.log(data);
       router.push(data);
       //redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
     });
 
-    channel.bind("audio-event", (data: string) => {
-      toggle()
-    })
+    audio.bind("audio-set", (data: string) => {
+      setAudio(new Audio(data));
+    });
+
+    audio.bind("audio-play", (data: string) => {
+      toggle();
+    });
 
     console.log(playing);
     return () => {
       pusherInstance.unsubscribe("rickroll");
+      pusherInstance.unsubscribe("audio");
     };
   }, []);
 
@@ -100,7 +106,7 @@ export function useAudio(
   () => void,
   React.Dispatch<React.SetStateAction<HTMLAudioElement>>
 ] {
-  const [audio, setAudio] = useState(new Audio(url));
+  const [audio, setAudio] = useState<HTMLAudioElement>(new Audio());
   const [playing, setPlaying] = useState(false);
 
   const toggle = () => setPlaying(!playing);
@@ -115,7 +121,7 @@ export function useAudio(
     return () => {
       audio.removeEventListener("ended", () => setPlaying(false));
     };
-  }, []);
+  }, [audio]);
 
   return [playing, toggle, setAudio];
 }
