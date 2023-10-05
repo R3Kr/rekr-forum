@@ -41,6 +41,7 @@ import { redirect } from "next/navigation";
 import { getPostsAndUser } from "@/app/actions";
 
 export default async function Page({ params }: { params: { thread: string } }) {
+
   const threadId = z.number().parse(Number(params.thread));
 
   const posts = await cache(

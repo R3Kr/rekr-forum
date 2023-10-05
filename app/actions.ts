@@ -78,11 +78,13 @@ export async function createThread(
 const postFormData = z.object({
   threadId: z.number(),
   content: z.string().min(1),
+  replyId: z.number().optional(),
 });
 
 export async function createPost(userData: {
   threadId: number;
   content: string;
+  replyId?: number;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -98,6 +100,7 @@ export async function createPost(userData: {
         content: data.content,
         userId: session.user.id,
         threadId: data.threadId,
+        replyId: data.replyId,
       },
     });
 
@@ -139,6 +142,7 @@ export async function getPostsAndUser(threadId: number) {
           image: true,
         },
       },
+      replyTo: true
     },
   });
 }
