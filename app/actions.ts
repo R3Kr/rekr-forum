@@ -9,6 +9,15 @@ import { redirect } from "next/navigation";
 import { FaSadCry } from "react-icons/fa";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { authOptions } from "./api/auth/[...nextauth]/route";
+import Pusher from "pusher";
+
+const pusher = new Pusher({
+  appId: process.env.PUSHER_ID as string,
+  key: process.env.NEXT_PUBLIC_PUSHER_KEY as string,
+  secret: process.env.PUSHER_SECRET as string,
+  cluster: "eu",
+  useTLS: true,
+});
 
 export async function isAdmin() {
   const session = await getServerSession(authOptions);
@@ -102,9 +111,13 @@ export async function createPost(userData: {
         threadId: data.threadId,
         replyId: data.replyId,
       },
+      include: {
+        thread: true,
+      },
     });
 
     revalidateTag(data.threadId.toString());
+    pusher.trigger("threads", data.threadId.toString(), post.thread)
     return post;
   } catch (error) {
     console.log(error);

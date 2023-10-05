@@ -9,6 +9,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import SubscriptionProvider from "./SubscriptionProvider";
 
 //const AdminContext = createContext(false);
 const PusherContext = createContext<Pusher | undefined>(undefined);
@@ -62,9 +63,11 @@ export default function Providers({
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <PusherContext.Provider value={pusher}>
-          <CacheProvider>
-            <ChakraProvider>{children}</ChakraProvider>
-          </CacheProvider>
+          <SubscriptionProvider>
+            <CacheProvider>
+              <ChakraProvider>{children}</ChakraProvider>
+            </CacheProvider>
+          </SubscriptionProvider>
         </PusherContext.Provider>
       </QueryClientProvider>
     </SessionProvider>
