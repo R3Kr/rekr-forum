@@ -20,7 +20,6 @@ import {
 } from "@chakra-ui/react";
 import { getPostsAndUser } from "@/app/actions";
 import Image from "next/image";
-import { Mutable } from "next/dist/client/components/router-reducer/router-reducer-types";
 
 // type ItemType<T extends any[]> = T extends (infer R)[] ? R : any;
 
@@ -42,7 +41,7 @@ export interface PostProps {
   author?: string;
   authorUrl?: string;
   createdAt: Date;
-  replyTo?: PostProps;
+  replyTo?: string;
   onReply: (p: PostProps) => void;
 }
 
@@ -52,7 +51,7 @@ export default function Post(post: PostProps) {
       {post.replyTo && (
         <Text
           textColor={"red.300"}
-        >{`A reply to: ${post.replyTo.content}`}</Text>
+        >{`A reply to: ${post.replyTo}`}</Text>
       )}
       <Text>{`${post.content}`}</Text>
 

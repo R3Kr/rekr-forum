@@ -30,6 +30,7 @@ import { getPostsAndUser } from "@/app/actions";
 import Post, { ParentData, PostProps } from "./Post";
 
 type ItemType<T extends any[]> = T extends (infer R)[] ? R : any;
+
 function postToPostProps(
   p: ItemType<Awaited<ReturnType<typeof getPostsAndUser>>>,
   onReply: (p: PostProps) => void
@@ -40,7 +41,7 @@ function postToPostProps(
     createdAt: p.createdAt,
     author: p.author?.name as string | undefined,
     authorUrl: p.author?.image as string | undefined,
-    replyTo: p.replyTo ? postToPostProps(p.replyTo, onReply) : undefined,
+    replyTo: p.replyTo ? p.replyTo.content : undefined,
     onReply: onReply,
   };
 
@@ -83,7 +84,7 @@ export default function CreatePost({ thread, posts }: Props) {
           author: session.data?.user.name as string | undefined,
           authorUrl: session.data?.user.image as string | undefined,
           createdAt: new Date(),
-          replyTo: replyPost,
+          replyTo: replyPost?.content,
           onReply: (pp: PostProps) => {
             setReplyPost(pp), onOpen();
           },

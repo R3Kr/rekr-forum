@@ -142,7 +142,7 @@ export async function getPostsAndUser(threadId: number) {
           image: true,
         },
       },
-      replyTo: true
+      replyTo: true,
     },
   });
 }
