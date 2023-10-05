@@ -3,6 +3,7 @@ import prisma from "@/lib/db";
 import { unstable_cache as cache } from "next/cache";
 import Thread from "@/components/Thread";
 import { Stack } from "@chakra-ui/react";
+import ThreadPage from "@/components/ThreadPage";
 
 export default async function Page() {
   const threads = await cache(
@@ -31,10 +32,6 @@ export default async function Page() {
   )();
 
   return (
-    <Stack gap={5}>
-      {threads.map((t) => (
-        <Thread thread={t} key={t.id}></Thread>
-      ))}
-    </Stack>
+    <ThreadPage threads={threads}></ThreadPage>
   );
 }

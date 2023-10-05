@@ -18,15 +18,15 @@ export default function Thread({ thread }: Props) {
   return (
     <Flex as={Link} href={`/${thread.category}/${thread.id}`}>
       <Button key={thread.id}>
-        {`${thread.title} | ${thread.author?.name}`}
+        {`${thread.title} | ${thread.createdAt.toLocaleString()}`}
       </Button>
-      <Image
+      {/*<Image
         src={thread.author?.image ? thread.author?.image : "/bruh.jpg"}
         alt="profile pic"
         width={40}
         height={40}
       ></Image>
-      <Text>{thread.createdAt.toLocaleString()}</Text>
+      <Text>{}</Text>*/}
     </Flex>
   );
 }

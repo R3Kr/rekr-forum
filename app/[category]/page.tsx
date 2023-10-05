@@ -6,6 +6,8 @@ import Link from "next/link";
 import CreateThread from "@/components/CreateThread";
 import Thread from "@/components/Thread";
 import { getThreadsAndUser } from "../actions";
+import { useBreakpointValue } from "@chakra-ui/react";
+import ThreadPage from "@/components/ThreadPage";
 
 export async function generateStaticParams() {
   return Object.keys(Category)
@@ -38,19 +40,9 @@ export default async function Page({
   )();
 
   return (
-    <Flex>
-      <Box>
-        {threads.map((t) => (
-          <>
-            <Thread thread={t}></Thread>
-            <br></br>
-          </>
-        ))}
-      </Box>
-      <Spacer />
-      <CreateThread
-        category={category as (typeof Category)[keyof typeof Category]}
-      ></CreateThread>
-    </Flex>
+    <ThreadPage
+      threads={threads}
+      category={category as (typeof Category)[keyof typeof Category]}
+    ></ThreadPage>
   );
 }
