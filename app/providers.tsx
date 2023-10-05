@@ -4,7 +4,6 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { CacheProvider } from "@chakra-ui/next-js";
 import { SessionProvider, useSession } from "next-auth/react";
 import Pusher from "pusher-js";
-import { isAdmin } from "./actions";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Session } from "next-auth";
