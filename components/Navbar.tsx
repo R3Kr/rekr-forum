@@ -115,7 +115,7 @@ export default function Navbar() {
             </Button>
           ) : (
             <Image
-              src={data?.user?.image as string}
+              src={data?.user?.image ? data?.user?.image : '/bruh.jpg'}
               alt="mamma"
               width={100}
               height={100}
