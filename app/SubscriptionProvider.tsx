@@ -33,7 +33,7 @@ export default function SubscriptionProvider({
       position: "bottom-left",
       render: () => (
         <Box color="white" p={3} bg="blue.500">
-          <Link href={`/${t.category}/${t.title}`}>
+          <Link href={`/${t.category}/${t.id}`}>
             {`The subscribed thread ${t.title} just had a new post!`}
           </Link>
         </Box>
