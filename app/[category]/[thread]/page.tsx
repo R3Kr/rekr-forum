@@ -35,13 +35,12 @@ import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 //   return threads.map((t) => ({ thread: t.id.toString() }));
 // }
 
-import React from "react";
+import React, { Suspense } from "react";
 import CreatePost from "@/components/CreatePost";
 import { redirect } from "next/navigation";
 import { getPostsAndUser } from "@/app/actions";
 
 export default async function Page({ params }: { params: { thread: string } }) {
-
   const threadId = z.number().parse(Number(params.thread));
 
   const posts = await cache(
@@ -70,5 +69,9 @@ export default async function Page({ params }: { params: { thread: string } }) {
 
   posts.forEach((p) => console.log(p));
 
-  return <CreatePost thread={thread} posts={posts}></CreatePost>;
+  return (
+    <Suspense fallback="loading..">
+      <CreatePost thread={thread} posts={posts}></CreatePost>
+    </Suspense>
+  );
 }

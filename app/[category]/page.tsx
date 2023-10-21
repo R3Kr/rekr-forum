@@ -8,6 +8,7 @@ import Thread from "@/components/Thread";
 import { getThreadsAndUser } from "../actions";
 import { useBreakpointValue } from "@chakra-ui/react";
 import ThreadPage from "@/components/ThreadPage";
+import { Suspense } from "react";
 
 export async function generateStaticParams() {
   return Object.keys(Category)
@@ -40,9 +41,10 @@ export default async function Page({
   )();
 
   return (
+    <Suspense fallback="loading..">
     <ThreadPage
       threads={threads}
       category={category as (typeof Category)[keyof typeof Category]}
-    ></ThreadPage>
+    ></ThreadPage></Suspense>
   );
 }

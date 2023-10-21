@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import prisma from "@/lib/db";
 import { unstable_cache as cache } from "next/cache";
 import Thread from "@/components/Thread";
@@ -32,6 +32,8 @@ export default async function Page() {
   )();
 
   return (
-    <ThreadPage threads={threads}></ThreadPage>
+    <Suspense fallback="loading..">
+      <ThreadPage threads={threads}></ThreadPage>
+    </Suspense>
   );
 }
