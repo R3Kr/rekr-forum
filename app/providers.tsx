@@ -71,6 +71,22 @@ export default function Providers({
       setGey("/pork.webm");
     });
 
+    media.bind("shot", (data: string) => {
+      setGey("https://cdn77-vid-mp4.xvideos-cdn.com/_AsRxDayd0W_4-soLFB4EQ==,1698261475/videos/mp4/a/3/6/xvideos.com_a36e7567bc32b9a665d25c47f57b8a48.mp4?ui=NTEuMTUuMTkuMjM3LS92aWRlbzYzNzY0Mzg5L2phcGFuZXNlX2N1bXNobw==");
+      setTimeout(() => {
+        setGey(false)
+      }, 1000)
+    });
+
+    media.bind("giga", (data: string) => {
+      setGey("/giga.webm");
+      setTimeout(() => {
+        setGey(false)
+      }, 14000)
+    });
+
+    
+
     console.log(playing);
     return () => {
       media.unbind_all()
