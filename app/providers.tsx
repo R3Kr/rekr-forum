@@ -13,6 +13,7 @@ import SubscriptionProvider from "./SubscriptionProvider";
 
 //const AdminContext = createContext(false);
 const PusherContext = createContext<Pusher | undefined>(undefined);
+export const GeyContext = createContext<false | string>(false);
 
 export default function Providers({
   children,
@@ -25,6 +26,7 @@ export default function Providers({
   const [pusher, setPusher] = useState<Pusher>();
   const [playing, toggle, setAudio] = useAudio("/fun.mp3");
   const queryClient = new QueryClient();
+  const [gey, setGey] = useState<false | string>(false);
 
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_PUSHER_KEY) {
@@ -36,7 +38,7 @@ export default function Providers({
     });
     setPusher(pusherInstance);
     const rickroll = pusherInstance.subscribe("rickroll");
-    const audio = pusherInstance.subscribe("audio");
+    const media = pusherInstance.subscribe("media");
 
     rickroll.bind("rickroll-event", (data: string) => {
       console.log(data);
@@ -44,16 +46,28 @@ export default function Providers({
       //redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
     });
 
-    audio.bind("audio-set", (data: string) => {
+    media.bind("audio-set", (data: string) => {
       setAudio(new Audio(data));
+      console.log("aduioset")
     });
 
-    audio.bind("audio-play", (data: string) => {
+    media.bind("audio-play", (data: string) => {
       toggle();
+      console.log("audioplay")
+    });
+
+    media.bind("video", (data: string) => {
+      setGey(data);
+      // setTimeout(() => {
+      //   setGey(false)
+      // }, 14000)
+      console.log(gey + " " + Date.now())
     });
 
     console.log(playing);
     return () => {
+      media.unbind_all()
+      rickroll.unbind_all()
       pusherInstance.unsubscribe("rickroll");
       pusherInstance.unsubscribe("audio");
     };
@@ -64,9 +78,11 @@ export default function Providers({
       <QueryClientProvider client={queryClient}>
         <PusherContext.Provider value={pusher}>
           <SubscriptionProvider>
-            <CacheProvider>
-              <ChakraProvider>{children}</ChakraProvider>
-            </CacheProvider>
+            <GeyContext.Provider value={gey}>
+              <CacheProvider>
+                <ChakraProvider>{children}</ChakraProvider>
+              </CacheProvider>
+            </GeyContext.Provider>
           </SubscriptionProvider>
         </PusherContext.Provider>
       </QueryClientProvider>

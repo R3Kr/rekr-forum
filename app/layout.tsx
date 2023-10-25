@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import React, { Suspense } from "react";
+import Video from "@/components/Video";
 
 export const metadata: Metadata = {
   title: "REKr Forum",
@@ -25,8 +26,9 @@ export default async function RootLayout({
       <body>
         <Providers session={session}>
           <Navbar></Navbar>
+          <Video></Video>
           {children}
-          <Footer></Footer>
+          
           <Analytics />
         </Providers>
       </body>
