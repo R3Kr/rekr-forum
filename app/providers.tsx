@@ -41,27 +41,34 @@ export default function Providers({
     const media = pusherInstance.subscribe("media");
 
     rickroll.bind("rickroll-event", (data: string) => {
-      console.log(data);
+      //console.log(data);
       router.push(data);
       //redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
     });
 
     media.bind("audio-set", (data: string) => {
       setAudio(new Audio(data));
-      console.log("aduioset")
+      //console.log("aduioset")
     });
 
     media.bind("audio-play", (data: string) => {
       toggle();
-      console.log("audioplay")
+      //console.log("audioplay")
     });
 
     media.bind("video", (data: string) => {
       setGey(data);
-      // setTimeout(() => {
-      //   setGey(false)
-      // }, 14000)
-      console.log(gey + " " + Date.now())
+      
+    });
+    media.bind("gey", (data: string) => {
+      setGey("/gey.webm");
+      setTimeout(() => {
+        setGey(false)
+      }, 14000)
+    });
+
+    media.bind("pork", (data: string) => {
+      setGey("/pork.webm");
     });
 
     console.log(playing);
