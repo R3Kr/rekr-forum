@@ -74,7 +74,7 @@ export default function CreatePost({ thread, posts }: Props) {
   );
 
   const session = useSession();
-  const { mutate, isError, isLoading, reset } = useMutation({
+  const { mutate, isError, isPending, reset } = useMutation({
     mutationFn: () => {
       setPostContents([
         ...postsContent,
@@ -131,8 +131,8 @@ export default function CreatePost({ thread, posts }: Props) {
           <Button
             w={60}
             bg={"darkturquoise"}
-            disabled={isLoading}
-            isLoading={isLoading}
+            disabled={isPending}
+            isLoading={isPending}
             onClick={() => {
               session.data ? mutate() : redirect("/api/auth/signin");
             }}
@@ -167,8 +167,8 @@ export default function CreatePost({ thread, posts }: Props) {
               colorScheme="blue"
               mr={3}
               onClick={() => mutate()}
-              isLoading={isLoading}
-              isDisabled={isLoading}
+              isLoading={isPending}
+              isDisabled={isPending}
             >
               Create
             </Button>

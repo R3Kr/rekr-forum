@@ -37,7 +37,7 @@ export default function CreateThread({ category, open }: Props) {
   const router = useRouter();
   const session = useSession();
 
-  const { data, mutate, isLoading } = useMutation({
+  const { data, mutate, isPending } = useMutation({
     mutationFn: () => {
       return createThread(selectedCategory as (typeof Category)[keyof typeof Category], title, content);
     },
@@ -117,8 +117,8 @@ export default function CreateThread({ category, open }: Props) {
               colorScheme="blue"
               mr={3}
               onClick={() => mutate()}
-              isLoading={isLoading}
-              isDisabled={isLoading}
+              isLoading={isPending}
+              isDisabled={isPending}
             >
               Create
             </Button>
